@@ -1,0 +1,33 @@
+{
+  "name": "fit-trainer",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YanOrlovShatskykh/new-fit-trainer.git"
+  },
+  "author": "Yan Orlov-Shatskykh <yan.orlov.shatskykh@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YanOrlovShatskykh/new-fit-trainer/issues"
+  },
+  "homepage": "https://github.com/YanOrlovShatskykh/new-fit-trainer#readme",
+  "devDependencies": {
+    "concurrently": "^5.3.0",
+    "nodemon": "^2.0.5"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "config": "^3.3.2",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-validator": "^6.6.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.10.9"
+  }
+}
