@@ -2,15 +2,23 @@ const express = require('express');
 const app = express();
 const config = require('config');
 const mongoose = require('mongoose');
-
+const { urlencoded } = require('body-parser');
 const PORT = config.get('port') || 3000;
 const mongoUri = config.get('mongoUri');
 
-app.use('/api', (req, res) => {
-  
-});
+
+app.use(express.json());
+app.use(express({urlencoded: true}));
+
+// for postman
+const cors = require('cors');
+app.use(cors());
+
+// routes
+app.use('/api/auth', require('./routes/auth.routes'));
 
 
+// connected to db
 async function start() {
   try {
     await mongoose.connect(mongoUri, {
@@ -28,4 +36,5 @@ async function start() {
 };
 
 start();
+
 
