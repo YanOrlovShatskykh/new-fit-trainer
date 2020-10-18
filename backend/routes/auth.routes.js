@@ -31,9 +31,41 @@ router.post(
       return res.status(400).json('Such user already exist');
     }
     const hashedPassword = await bcrypt.hash(password, SALT);
-    const user = new User({ email, password: hashedPassword });
+    const verifCode = Math.floor(Math.random() * 10000);
+    const user = new User({ email, password: hashedPassword, verifCode });
     await user.save();
+    const verUri = `http://localhost:${config.get('port')}/api/auth/verification?email=${user.email}&verifCode=${verifCode}`;
+    console.log('Link for verification:', verUri);
     res.status(200).json({ message: 'User was created' });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Something wrong. Try again.' });
+  }
+});
+
+//verification
+router.post('/verification', async (req, res) => {
+  try {
+    const { email, verifCode } = req.query;
+
+    const user = await User.findOne({ email });
+
+    if(!user) {
+      return res.status(400).json('Such user is not exist');
+    }
+  
+    if(user.verifCode != verifCode) {
+      return res.status(400).json('Wrong verification code');
+    }  
+    await user.updateOne({ confirm: true });
+    
+    const token = jwt.sign(
+      { userId: user.id },
+      config.get('jwtSecretKey'),
+      { expiresIn: '1h' }
+    );
+
+    res.status(200).json({ token, userId: user.id, message: 'Your account is verificated now.' });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: 'Something wrong. Try again.' });
@@ -57,7 +89,7 @@ router.post(
           message: 'Sign-in is failed'
         });
       }
-      const { email, password } = req.body;
+      const { email, password, verifCode, confirm } = req.body;
       const user = await User.findOne({ email });
 
       if(!user) {
@@ -68,12 +100,12 @@ router.post(
       if(!isMatch) {
         return res.status(200).json('Login or password is not corrected');
       }
-      const token = jwt.sign(
-        { userId: user.id },
-        config.get('jwtSecretKey'),
-        { expiresIn: '1h' }
-      );
-      res.status(200).json({ token, userId: user.id });
+
+      if(!confirm) {
+        return res.status(403).json('You not confirmed your email.');
+      }
+
+      res.status(200).json('Welcome');
     } catch (error) {
       console.log(error);
       res.status(500).json({ message: 'Something wrong. Try again.' });
