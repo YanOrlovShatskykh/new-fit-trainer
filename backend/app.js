@@ -6,19 +6,13 @@ const { urlencoded } = require('body-parser');
 const PORT = config.get('port') || 3000;
 const mongoUri = config.get('mongoUri');
 
-
 app.use(express.json());
-app.use(express({urlencoded: true}));
+app.use(express({ urlencoded: true }));
 
 // for postman
 const cors = require('cors');
 app.use(cors());
 
-// routes
-app.use('/api/auth', require('./routes/auth.routes'));
-// app.use('/api/')
-
-// connected to db
 async function start() {
   try {
     await mongoose.connect(mongoUri, {
@@ -37,4 +31,6 @@ async function start() {
 
 start();
 
-
+// routes
+app.use('/api/auth', require('./routes/auth.routes'));
+app.use('/api/excercise', require('./routes/excercise'));

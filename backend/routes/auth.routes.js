@@ -47,24 +47,28 @@ router.post(
 router.post('/verification', async (req, res) => {
   try {
     const { email, verifCode } = req.query;
-
     const user = await User.findOne({ email });
 
     if(!user) {
       return res.status(400).json('Such user is not exist');
     }
+    const { verifCode: bdVerifCode } = user;
+
+    // if(!bdVerifCode) {
+    //   return res.status(400).json('You already have been verificated');
+    // }
   
     if(user.verifCode != verifCode) {
       return res.status(400).json('Wrong verification code');
     }  
     await user.updateOne({ confirm: true });
-    
+
     const token = jwt.sign(
-      { userId: user.id },
+      { email, userId: user.id },
       config.get('jwtSecretKey'),
       { expiresIn: '1h' }
     );
-
+    // await user.updateOne({ verifCode: '' });
     res.status(200).json({ token, userId: user.id, message: 'Your account is verificated now.' });
   } catch (error) {
     console.log(error);
@@ -89,22 +93,22 @@ router.post(
           message: 'Sign-in is failed'
         });
       }
-      const { email, password, verifCode, confirm } = req.body;
+      const { email, password, verifCode } = req.body;
       const user = await User.findOne({ email });
-
+      const isMatch = await bcrypt.compare(password, user.password);
+      const { confirm } = user;
+      
       if(!user) {
         return res.status(400).json('Such user is not exist');
       }
-      const isMatch = await bcrypt.compare(password, user.password);
-
+      
       if(!isMatch) {
         return res.status(200).json('Login or password is not corrected');
       }
-
+      
       if(!confirm) {
         return res.status(403).json('You not confirmed your email.');
       }
-
       res.status(200).json('Welcome');
     } catch (error) {
       console.log(error);
