@@ -66,7 +66,7 @@ router.post('/verification', async (req, res) => {
     const token = jwt.sign(
       { email, userId: user.id },
       config.get('jwtSecretKey'),
-      { expiresIn: '1h' }
+      { expiresIn: '24h' }
     );
     // await user.updateOne({ verifCode: '' });
     res.status(200).json({ token, userId: user.id, message: 'Your account is verificated now.' });
@@ -81,7 +81,7 @@ router.post(
   '/login',
   [
     check('email', 'Email is not corrected').normalizeEmail().isEmail(),
-    check('password', 'Enter password').exists()
+    check('password', 'Password length must be at least 6 characters').exists().isLength({ min: 6 })
   ],
   async (req, res) => {
     try {
@@ -95,12 +95,12 @@ router.post(
       }
       const { email, password, verifCode } = req.body;
       const user = await User.findOne({ email });
-      const isMatch = await bcrypt.compare(password, user.password);
-      const { confirm } = user;
       
       if(!user) {
         return res.status(400).json('Such user is not exist');
       }
+      const isMatch = await bcrypt.compare(password, user.password);
+      const { confirm } = user;
       
       if(!isMatch) {
         return res.status(200).json('Login or password is not corrected');
