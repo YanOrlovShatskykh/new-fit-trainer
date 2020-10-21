@@ -34,3 +34,4 @@ start();
 // routes
 app.use('/api/auth', require('./routes/auth.routes'));
 app.use('/api/excercise', require('./routes/excercise'));
+app.use('/api/workout', require('./routes/workout'));

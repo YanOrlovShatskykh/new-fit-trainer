@@ -6,8 +6,8 @@ const schema = new Schema({
   verifCode: { type: Number, default: '' },
   confirm: { type: Boolean, default: false },
   img: { type: String, default: '' },
-  excercises: [{ type: Types.ObjectId, ref: 'Excercise' }],
-  workouts: [{ type: Types.ObjectId, ref: 'Workout' }]
+  // excercises: [{ type: Types.ObjectId, ref: 'Excercise' }],
+  // workouts: [{ type: Types.ObjectId, ref: 'Workout' }]
 });
 
 module.exports = model('User', schema);
