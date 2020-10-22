@@ -5,20 +5,9 @@ const config = require('config');
 const Excercise = require('../models/Excercise');
 const User = require('../models/User');
 
-router.post('/:userId', async (req, res) => {
-  try{ 
-    const token = req.headers.authorization;
-    // const token = authHeader.authorization && authHeader.authorization.split(" ")[1];
-    if(!token) {
-      return res.status(403).json('Denied');
-    }
-    await jwt.verify(token, config.get('jwtSecretKey'), (err, user) => {
-      if (err) {
-        return res.status(200).json('Denied');
-      }
-      req.user = { email: user.email, userId: req.params.userId };
-    });
 
+router.post('/:userId', async (req, res) => {
+  try{
     const owner = req.params.userId;
     const { name, measurementType } = req.body;
     const excercise = new Excercise({ name, measurementType, owner });
@@ -32,20 +21,6 @@ router.post('/:userId', async (req, res) => {
 
 // router.delete('/:id', async(req, res) => {
 //   try {
-//     const token = req.headers.authorization;
-//     // const token = authHeader.authorization && authHeader.authorization.split(" ")[1];
-    
-//     if(!token) {
-//       return res.status(403).json('Denied');
-//     }
-//     await jwt.verify(token, config.get('jwtSecretKey'), (err, user) => {
-//       if (err) {
-//         console.log(err);
-//         return res.status(200).json('Denied');
-//       }
-//       req.user = { email: user.email };
-//     });
-
 //     const excId = req.params.id;
 //     const email = req.user.email;
 //     await Excercise.findByIdAndDelete({ _id: excId });
@@ -61,20 +36,6 @@ router.post('/:userId', async (req, res) => {
 
 router.delete('/', async (req, res) => {
   try {
-    const token = req.headers.authorization;
-    // const token = authHeader.authorization && authHeader.authorization.split(" ")[1];
-    
-    if(!token) {
-      return res.status(403).json('Denied');
-    }
-    await jwt.verify(token, config.get('jwtSecretKey'), (err, user) => {
-      if (err) {
-        console.log(err);
-        return res.status(200).json('Denied');
-      }
-      req.user = { email: user.email };
-    });
-
     const id = req.body._id;
     await Excercise.findByIdAndDelete(id);
     res.status(200).json('ok');
@@ -85,19 +46,6 @@ router.delete('/', async (req, res) => {
 
 router.get('/:userId', async (req, res) => {
   try {
-    const token = req.headers.authorization;
-    // const token = authHeader.authorization && authHeader.authorization.split(" ")[1];
-    
-    if(!token) {
-      return res.status(403).json('Denied');
-    }
-    await jwt.verify(token, config.get('jwtSecretKey'), (err, user) => {
-      if (err) {
-        console.log(err);
-        return res.status(200).json('Denied');
-      }
-      req.user = { email: user.email };
-    });
     const userId = req.params.userId;
     const excercises = await Excercise.find({ owner: userId });
     res.status(200).json(excercises);
@@ -108,26 +56,9 @@ router.get('/:userId', async (req, res) => {
 });
 
 router.put('/', async (req, res) => {
-  try {
-    const token = req.headers.authorization;
-    // const token = authHeader.authorization && authHeader.authorization.split(" ")[1];
-    
-    if(!token) {
-      return res.status(403).json('Denied');
-    }
-    await jwt.verify(token, config.get('jwtSecretKey'), (err, user) => {
-      if (err) {
-        console.log(err);
-        return res.status(200).json('Denied');
-      }
-      req.user = { email: user.email };
-    });
-    
+  try {    
     // const { excercises } = await User.findOne({ email }).populate('excercises');
-    
     const updExc = req.body;
-
-    console.log(updExc);
 
     for await (let excercise of updExc) {
       data = {

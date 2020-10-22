@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 const { urlencoded } = require('body-parser');
 const PORT = config.get('port') || 3000;
 const mongoUri = config.get('mongoUri');
+const auth = require('./middlewares/auth');
+
 
 app.use(express.json());
 app.use(express({ urlencoded: true }));
@@ -33,5 +35,5 @@ start();
 
 // routes
 app.use('/api/auth', require('./routes/auth.routes'));
-app.use('/api/excercise', require('./routes/excercise'));
-app.use('/api/workout', require('./routes/workout'));
+app.use('/api/excercise', auth, require('./routes/excercise'));
+app.use('/api/workout', auth, require('./routes/workout'));
