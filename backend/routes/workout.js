@@ -6,6 +6,7 @@ router.post('/:userId', async (req, res) => {
   try{ 
     const owner = req.params.userId;
     const excercises = req.body.map(excercise => {
+      console.log(excercise);
       return excercise.excercises[0]  
     })
     const workout = new Workout({
