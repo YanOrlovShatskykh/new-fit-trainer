@@ -1,11 +1,9 @@
 const { Router } = require('express');
 const router = Router();
-const jwt = require('jsonwebtoken');
-const config = require('config');
 const Excercise = require('../models/Excercise');
 const User = require('../models/User');
 
-
+// localhost:3000/api/excercise/
 router.post('/:userId', async (req, res) => {
   try{
     const owner = req.params.userId;
@@ -56,7 +54,7 @@ router.get('/:userId', async (req, res) => {
 });
 
 router.put('/', async (req, res) => {
-  try {    
+  try {
     // const { excercises } = await User.findOne({ email }).populate('excercises');
     const updExc = req.body;
 

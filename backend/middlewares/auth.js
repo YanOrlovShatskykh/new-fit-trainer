@@ -10,7 +10,7 @@ module.exports = async (req, res, next) => {
   await jwt.verify(token, config.get('jwtSecretKey'), (err, user) => {
     if (err) {
       console.log(err);
-      return res.status(200).json('Denied');
+      return res.status(403).json('Denied');
     }
     req.user = { email: user.email };
   });
